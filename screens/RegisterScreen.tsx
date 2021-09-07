@@ -6,7 +6,6 @@ import Button from '../components/Button';
 import { useState } from 'react';
 
 import BlankSpacer from 'react-native-blank-spacer';
-import { KeyboardAvoidingView } from 'react-native'
 
 import { Text, View } from '../components/Themed';
 import Navigation from '../navigation';
@@ -18,47 +17,70 @@ var wHeight = Dimensions.get('window').height;
 var wWidth = Dimensions.get('window').width;
 const fb = firebase.default
 
-export default function Login2Screen({ route, navigation }) {
+export default function RegisterScreen({ route, navigation }) {
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [confirmPassword, setConfirmPassword] = useState('')
+    const [fName, setFName] = useState('')
+    const [lName, setLName] = useState('')
 
-    const onLoginPress = () => {
+    const onRegisterPress = () => {
+
+        if (confirmPassword != password) {
+            alert('Passwords do not match')
+            return;
+        } 
         fb
             .auth()
-            .signInWithEmailAndPassword(email, password)
+            .createUserWithEmailAndPassword(email, password)
             .then( (response) => {
-
                 const uid = response.user.uid
-                const usersRef = fb.firestore().collection('users')
-                usersRef
+                const data = {
+                    id: uid,
+                    email,
+                    accountType: route.params.loginType,
+                    name: `${fName} ${lName}`,
+                    firstName: fName,
+                    lastName: lName, 
+                    posts: []
+                };
+                const userRef = fb.firestore().collection('users')
+                userRef
                     .doc(uid)
-                    .get()
-                    .then( firestoreDocument => {
-                        if (!firestoreDocument.exists) {
-                            alert(`User does not exist ${email} ${password}`)
-                            return;
-                        } else if (firestoreDocument.data().accountType != route.params.loginType) {
-                            alert(`User is not a ${route.params.loginType} account`)
-                            return;
-                        }
-                        const user = firestoreDocument.data()
-                        navigation.navigate(`${route.params.loginType}Home`, {user})
+                    .set(data)
+                    .then( () => {
+                        navigation.navigate(`${route.params.loginType}Home`, {user: data})
                     })
-                    .catch( error => { alert(error) } )
+                    .catch( (error) => { alert(error) } )
             })
-            .catch( error => { alert(error) } )
+            .catch( (error) => { alert(error) } )
     }
 
     return (
-        <View style={styles.container} >
-        <BlankSpacer height={100} />
-            <Text style={styles.title}>{ route.params.loginType } Login</Text>
+        <View style={styles.container}>
+        <BlankSpacer height={85} />
+            <Text style={styles.title}>{ route.params.loginType } Register</Text>
 
+            <BlankSpacer height={50} />
             <View style={styles.loginContainer}>
                 <TextInput 
                     style={styles.inputStyle}
-                    placeholder='Username/Email'
+                    placeholder='First Name'
+                    onChangeText={(text) => setFName(text)}
+                    value={fName}
+                /> 
+                <BlankSpacer height={25} />
+                <TextInput 
+                    style={styles.inputStyle}
+                    placeholder='Last Name'
+                    onChangeText={(text) => setLName(text)}
+                    value={lName}
+                /> 
+                <BlankSpacer height={25} />
+                <TextInput 
+                    style={styles.inputStyle}
+                    placeholder='Email'
                     onChangeText={(text) => setEmail(text)}
                     value={email}
                 /> 
@@ -70,12 +92,19 @@ export default function Login2Screen({ route, navigation }) {
                     value={password}
                     secureTextEntry
                 />
-                <TouchableOpacity onPress={() => navigation.replace('Register', route.params)} style={styles.link}>
-                    <Text style={styles.linkText}>don't have an account? register here</Text>
+                <BlankSpacer height={25} />
+                <TextInput 
+                    style={styles.inputStyle}
+                    placeholder='Confirm Password'
+                    onChangeText={(text) => setConfirmPassword(text)}
+                    value={confirmPassword}
+                    secureTextEntry
+                />
+                <TouchableOpacity onPress={() => navigation.replace('Login', route.params)} style={styles.link}>
+                    <Text style={styles.linkText}>already have an account? login here</Text>
                 </TouchableOpacity>
                 <BlankSpacer height={50} />
-                <Button label='Login' action={ () => onLoginPress() } />
-                
+                <Button label='Register' action={ () => onRegisterPress() } />                
             </View>
 
             <BlankSpacer height={150} />
@@ -102,7 +131,7 @@ const styles = StyleSheet.create({
       paddingVertical: 15,
     },
     title: {
-        fontSize: 45,
+        fontSize: 40,
         fontWeight: 'bold'
     },
     buttonStyle: {
@@ -123,7 +152,7 @@ const styles = StyleSheet.create({
         borderColor: '#808080',
         borderRadius: 10,
         width: wWidth * 0.60,
-        height: wHeight * 0.075,
+        height: wHeight * 0.060,
         fontSize: 22,
         paddingStart: 10,
         justifyContent: 'center'

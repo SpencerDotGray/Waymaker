@@ -15,6 +15,9 @@ import { RootStackParamList } from '../types';
 import BottomTabNavigator from './BottomTabNavigator';
 import Login1Screen from '../screens/Login1Screen'; 
 import Login2Screen from '../screens/Login2Screen'; 
+import RegisterScreen from '../screens/RegisterScreen';
+import MissionHomeScreen from '../screens/Missionary/MissionHome';
+import MissionAddPostScreen from '../screens/Missionary/MissionAddPost';
 
 
 import LinkingConfiguration from './LinkingConfiguration';
@@ -39,6 +42,9 @@ function RootNavigator() {
       <Stack.Screen name="Root" component={Login1Screen} />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
       <Stack.Screen name="Login" component={Login2Screen} />
+      <Stack.Screen name="Register" component={RegisterScreen} />
+      <Stack.Screen name="MissionaryHome" component={MissionHomeScreen} />
+      <Stack.Screen name="MissionAddPost" component={MissionAddPostScreen} />
     </Stack.Navigator>
   );
 }

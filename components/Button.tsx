@@ -21,8 +21,8 @@ export default function Button({ label, action }: { label: string, action: Funct
 
 const styles = StyleSheet.create({
     buttonStyle: {
-        width: 175,
-        height: 65,
+        width: 155,
+        height: 50,
         alignItems: 'center',
         borderRadius: 10,
         backgroundColor: '#6495ed',
