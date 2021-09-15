@@ -11,6 +11,7 @@ import { KeyboardAvoidingView, ScrollView, FlatList, ActivityIndicator } from 'r
 import { Text, View } from '../../components/Themed';
 import Navigation from '../../navigation';
 import { propTypes } from 'react-spacer';
+import moment from 'moment';
 
 import { firebase }  from '../../firebase/config'
 
@@ -24,37 +25,38 @@ export default function MissionHomeScreen({ route, navigation }) {
     const [callingData, setCallingData] = useState(false)
     const [posts, setPosts] = useState([]);
 
-    React.useEffect( () => {
+    // React.useEffect( () => {
 
-        if (loading) {
-            const tempList = []
-            fb.firestore().collection('users').doc(route.params.user.id).get()
-                .then( docRef => {
+    //     if (moment().diff(loadDate, 'seconds') >= 30) {
+    //         setLoadDate(moment());
+    //         const tempList = []
+    //         fb.firestore().collection('users').doc(route.params.user.id).get()
+    //             .then( docRef => {
 
-                    if (!docRef.exists) {
-                        alert('User does not exist')
-                        return;
-                    }
+    //                 if (!docRef.exists) {
+    //                     alert('User does not exist')
+    //                     return;
+    //                 }
 
-                    docRef.data().posts.forEach( post => {
+    //                 docRef.data().posts.forEach( post => {
 
-                        post.get()
-                            .then( postRef => {
+    //                     post.get()
+    //                         .then( postRef => {
 
-                                if (!postRef.exists) {
-                                    alert('Post not found CRITICAL ERROR')
-                                    return;
-                                }
+    //                             if (!postRef.exists) {
+    //                                 alert('Post not found CRITICAL ERROR')
+    //                                 return;
+    //                             }
 
-                                tempList.push(postRef.data())
-                            }).catch( error => { alert(error) })
-                    });
+    //                             tempList.push(postRef.data())
+    //                         }).catch( error => { alert(error) })
+    //                 });
 
-                    setPosts(tempList);
-                    setLoading(false);
-                })
-        }
-    })
+    //                 setPosts(tempList);
+    //                 setLoading(false);
+    //             })
+    //     }
+    // })
 
     if (loading) {
         return <ActivityIndicator />;
@@ -64,7 +66,7 @@ export default function MissionHomeScreen({ route, navigation }) {
     return (
         <View style={styles.container} >
             <BlankSpacer height={100} />
-            <Text style={styles.title}>{ route.params.user.name } Home</Text>
+            <Text style={styles.title}>{route.params.user.name}Home</Text>
             
             <FlatList 
                 data={posts}
