@@ -42,7 +42,7 @@ export default function MissionAddPostScreen({ route, navigation }) {
                 posts: fb.firestore.FieldValue.arrayUnion(documentRef)
             }).then( () => {
                 route.params.user.posts.push(documentRef.path)
-                navigation.replace('MissionaryHome', route.params)
+                navigation.pop(1, route.params)
             })
         })
     }

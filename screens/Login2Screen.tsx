@@ -43,6 +43,10 @@ export default function Login2Screen({ route, navigation }) {
                             return;
                         }
                         const user = firestoreDocument.data()
+                        // navigation.reset({
+                        //     index: 0,
+                        //     routes: [{name: `${route.params.loginType}Home`, params: {user}}]
+                        // });
                         navigation.navigate(`${route.params.loginType}Home`, {user})
                     })
                     .catch( error => { alert(error) } )

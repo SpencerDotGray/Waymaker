@@ -24,49 +24,51 @@ export default function MissionHomeScreen({ route, navigation }) {
     const [loading, setLoading] = useState(true)
     const [callingData, setCallingData] = useState(false)
     const [posts, setPosts] = useState([]);
+    const [loadDate, setLoadDate] = useState(moment());
 
-    // React.useEffect( () => {
+    React.useEffect( () => {
 
-    //     if (moment().diff(loadDate, 'seconds') >= 30) {
-    //         setLoadDate(moment());
-    //         const tempList = []
-    //         fb.firestore().collection('users').doc(route.params.user.id).get()
-    //             .then( docRef => {
+        // if (moment().diff(loadDate, 'seconds') >= 30) {
+            setLoadDate(moment());
+            const tempList = []
+            fb.firestore().collection('users').doc(route.params.user.id).get()
+                .then( docRef => {
 
-    //                 if (!docRef.exists) {
-    //                     alert('User does not exist')
-    //                     return;
-    //                 }
+                    if (!docRef.exists) {
+                        alert('User does not exist')
+                        return;
+                    }
 
-    //                 docRef.data().posts.forEach( post => {
+                    docRef.data().posts.forEach( post => {
 
-    //                     post.get()
-    //                         .then( postRef => {
+                        post.get()
+                            .then( postRef => {
 
-    //                             if (!postRef.exists) {
-    //                                 alert('Post not found CRITICAL ERROR')
-    //                                 return;
-    //                             }
+                                if (!postRef.exists) {
+                                    alert('Post not found CRITICAL ERROR')
+                                    return;
+                                }
+                                // alert(postRef.data().authorID)
+                                // setPosts(posts.concat([postRef.data()]))
+                            }).catch( error => { alert(error) })
+                    });
 
-    //                             tempList.push(postRef.data())
-    //                         }).catch( error => { alert(error) })
-    //                 });
+                    alert('I have made it')
+                    // setPosts(tempList);
+                    // setLoading(false);
+                })
+        // }
+    })
 
-    //                 setPosts(tempList);
-    //                 setLoading(false);
-    //             })
-    //     }
-    // })
-
-    if (loading) {
-        return <ActivityIndicator />;
-    }
+    // if (loading) {
+    //     return <ActivityIndicator />;
+    // }
 
 
     return (
         <View style={styles.container} >
             <BlankSpacer height={100} />
-            <Text style={styles.title}>{route.params.user.name}Home</Text>
+            <Text style={styles.title}>Home</Text>
             
             <FlatList 
                 data={posts}
