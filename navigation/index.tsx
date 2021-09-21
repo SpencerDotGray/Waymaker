@@ -19,6 +19,14 @@ import RegisterScreen from '../screens/RegisterScreen';
 import MissionHomeScreen from '../screens/Missionary/MissionHome';
 import MissionAddPostScreen from '../screens/Missionary/MissionAddPost';
 
+import { LogBox } from 'react-native';
+
+// Ignore log notification by message:
+LogBox.ignoreLogs(['Warning: ...', 'Setting a timer', 'Non-serializable values']);
+
+// Ignore all log notifications:
+LogBox.ignoreAllLogs();
+
 
 import LinkingConfiguration from './LinkingConfiguration';
 

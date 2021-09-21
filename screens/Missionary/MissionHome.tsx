@@ -14,6 +14,7 @@ import { propTypes } from 'react-spacer';
 import moment from 'moment';
 
 import { firebase }  from '../../firebase/config'
+import { getPostsBy, getPostData } from '../../firebase/firebasedata';
 
 var wHeight = Dimensions.get('window').height;
 var wWidth = Dimensions.get('window').width;
@@ -24,46 +25,35 @@ export default function MissionHomeScreen({ route, navigation }) {
     const [loading, setLoading] = useState(true)
     const [callingData, setCallingData] = useState(false)
     const [posts, setPosts] = useState([]);
+    const [postsNeedCleared, setPostsNeedCleared] = useState(false);
     const [loadDate, setLoadDate] = useState(moment());
+
+    const populatePosts = () => {
+
+        console.log("here");
+
+        getPostsBy([route.params.user.id], (authorPost) => {
+            
+            var tempList = posts;
+            
+            getPostData(authorPost, (data) => {
+                tempList.push(data);
+                setPosts(tempList);
+            })
+        });
+    }
 
     React.useEffect( () => {
 
-        // if (moment().diff(loadDate, 'seconds') >= 30) {
-            setLoadDate(moment());
-            const tempList = []
-            fb.firestore().collection('users').doc(route.params.user.id).get()
-                .then( docRef => {
-
-                    if (!docRef.exists) {
-                        alert('User does not exist')
-                        return;
-                    }
-
-                    docRef.data().posts.forEach( post => {
-
-                        post.get()
-                            .then( postRef => {
-
-                                if (!postRef.exists) {
-                                    alert('Post not found CRITICAL ERROR')
-                                    return;
-                                }
-                                // alert(postRef.data().authorID)
-                                // setPosts(posts.concat([postRef.data()]))
-                            }).catch( error => { alert(error) })
-                    });
-
-                    alert('I have made it')
-                    // setPosts(tempList);
-                    // setLoading(false);
-                })
+        // if (!postsNeedCleared) {
+        //     populatePosts();            
+        // } else {
+        //     setPosts([]);
         // }
+        // setPostsNeedCleared(!postsNeedCleared);
+
+        populatePosts();
     })
-
-    // if (loading) {
-    //     return <ActivityIndicator />;
-    // }
-
 
     return (
         <View style={styles.container} >
@@ -73,8 +63,8 @@ export default function MissionHomeScreen({ route, navigation }) {
             <FlatList 
                 data={posts}
                 renderItem = { ({ item }) => (
-                    <View>
-                        <Text>Poster: {item.authorID}</Text>
+                    <View style={styles.postContainer}>
+                        <Text>Poster: {item.authorName}</Text>
                         <Text>Content: {item.content}</Text>
                     </View>
                 )}
@@ -83,7 +73,11 @@ export default function MissionHomeScreen({ route, navigation }) {
 
             <TouchableOpacity style={styles.addPost} onPress={ () => { navigation.push('MissionAddPost', route.params) } }>
                 <Text>Add Post</Text>
-            </TouchableOpacity>   
+            </TouchableOpacity>  
+
+            <TouchableOpacity style={styles.refreshPosts} onPress={populatePosts}>
+                <Text>Refresh</Text>
+            </TouchableOpacity> 
         </View>
     );
 }
@@ -138,5 +132,15 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 40,
         right: 40
+    },
+    postContainer: {
+        marginTop: 10,
+        marginBottom: 10
+    },
+    refreshPosts: {
+        borderRadius: 100,
+        position: 'absolute',
+        bottom: 40,
+        left: 40
     }
 });
