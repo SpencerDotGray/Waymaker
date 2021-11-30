@@ -9,7 +9,6 @@ export type RootStackParamList = {
   Login: undefined;
   Register: undefined;
   MissionaryHome: undefined;
-  MissionAddPost: undefined;
 };
 
 export type BottomTabParamList = {

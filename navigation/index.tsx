@@ -13,11 +13,9 @@ import { RootStackParamList } from '../types';
 
 
 import BottomTabNavigator from './BottomTabNavigator';
-import Login1Screen from '../screens/Login1Screen'; 
-import Login2Screen from '../screens/Login2Screen'; 
-import RegisterScreen from '../screens/RegisterScreen';
-import MissionHomeScreen from '../screens/Missionary/MissionHome';
-import MissionAddPostScreen from '../screens/Missionary/MissionAddPost';
+import LoginScreen from '../screens/AccountScreens/LoginScreen'; 
+import RegisterScreen from '../screens/AccountScreens/RegisterScreen';
+import MissionaryHomeScreen from '../screens/MissionaryScreens/MissionaryHomeScreen';
 
 import { LogBox } from 'react-native';
 
@@ -47,12 +45,11 @@ const Stack = createStackNavigator<RootStackParamList>();
 function RootNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Root" component={Login1Screen} />
+      <Stack.Screen name="Root" component={LoginScreen} />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
-      <Stack.Screen name="Login" component={Login2Screen} />
+      <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Register" component={RegisterScreen} />
-      <Stack.Screen name="MissionaryHome" component={MissionHomeScreen} />
-      <Stack.Screen name="MissionAddPost" component={MissionAddPostScreen} />
+      <Stack.Screen name="MissionaryHome" component={MissionaryHomeScreen} />
     </Stack.Navigator>
   );
 }

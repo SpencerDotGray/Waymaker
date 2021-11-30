@@ -2,65 +2,39 @@ import { StackActions } from '@react-navigation/routers';
 import * as React from 'react';
 import { Alert, StyleSheet, Dimensions, TouchableOpacity, TextInput, BackHandler } from 'react-native';
 import { NavigationContainer, DefaultTheme, DarkTheme, NavigationProp } from '@react-navigation/native';
-import Button from '../components/Button';
+// import Button from '../components/Button';
 import { useState } from 'react';
+import { Button, Menu, Provider as PaperProvider } from 'react-native-paper';
 
 import BlankSpacer from 'react-native-blank-spacer';
 
-import { Text, View } from '../components/Themed';
-import Navigation from '../navigation';
+import { Text, View } from '../../components/Themed';
+import Navigation from '../../navigation';
 import { propTypes } from 'react-spacer';
-
-import { firebase }  from '../firebase/config'
+import { WaymakerFirebase, WaymakerFirebaseInstance } from "../../firebase/WaymakerFB";
 
 var wHeight = Dimensions.get('window').height;
 var wWidth = Dimensions.get('window').width;
-const fb = firebase.default
+const firebase: WaymakerFirebase = WaymakerFirebaseInstance().getInstance();
 
 export default function RegisterScreen({ route, navigation }) {
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const [confirmPassword, setConfirmPassword] = useState('')
     const [fName, setFName] = useState('')
     const [lName, setLName] = useState('')
+    const [cat, setCat] = useState('Person')
+    const [username, setUsername] = useState('')
+    const [menuVisible, setMenuVisible] = useState(false);
 
-    const onRegisterPress = () => {
-
-        if (confirmPassword != password) {
-            alert('Passwords do not match')
-            return;
-        } 
-        fb
-            .auth()
-            .createUserWithEmailAndPassword(email, password)
-            .then( (response) => {
-                const uid = response.user.uid
-                const data = {
-                    id: uid,
-                    email,
-                    accountType: route.params.loginType,
-                    name: `${fName} ${lName}`,
-                    firstName: fName,
-                    lastName: lName, 
-                    posts: []
-                };
-                const userRef = fb.firestore().collection('users')
-                userRef
-                    .doc(uid)
-                    .set(data)
-                    .then( () => {
-                        navigation.navigate(`${route.params.loginType}Home`, {user: data})
-                    })
-                    .catch( (error) => { alert(error) } )
-            })
-            .catch( (error) => { alert(error) } )
-    }
+    const openMenu = () => setMenuVisible(true);
+    const closeMenu = () => setMenuVisible(false);
 
     return (
+        <PaperProvider>
         <View style={styles.container}>
-        <BlankSpacer height={85} />
-            <Text style={styles.title}>{ route.params.loginType } Register</Text>
+            <BlankSpacer height={85} />
+            <Text style={styles.title}>Register</Text>
 
             <BlankSpacer height={50} />
             <View style={styles.loginContainer}>
@@ -87,28 +61,43 @@ export default function RegisterScreen({ route, navigation }) {
                 <BlankSpacer height={25} />
                 <TextInput 
                     style={styles.inputStyle}
+                    placeholder='Username'
+                    onChangeText={(text) => setUsername(text)}
+                    value={username}
+                /> 
+                <BlankSpacer height={25} /> 
+                <TextInput 
+                    style={styles.inputStyle}
                     placeholder='Password'
                     onChangeText={(text) => setPassword(text)}
                     value={password}
                     secureTextEntry
                 />
                 <BlankSpacer height={25} />
-                <TextInput 
-                    style={styles.inputStyle}
-                    placeholder='Confirm Password'
-                    onChangeText={(text) => setConfirmPassword(text)}
-                    value={confirmPassword}
-                    secureTextEntry
-                />
+                <Text>{cat}</Text>
+                <Menu 
+                    visible={menuVisible}
+                    onDismiss={closeMenu}
+                    anchor={<Button onPress={openMenu}>Show Menu</Button>}>
+                    <Menu.Item onPress={() => { setCat('Missionary'); closeMenu(); }} title="Missionary" />
+                    <Menu.Item onPress={() => { setCat('Church'); closeMenu(); }} title="Church" />
+                    <Menu.Item onPress={() => { setCat('Person'); closeMenu(); }} title="Person" />
+                </Menu>
+
                 <TouchableOpacity onPress={() => navigation.replace('Login', route.params)} style={styles.link}>
                     <Text style={styles.linkText}>already have an account? login here</Text>
                 </TouchableOpacity>
                 <BlankSpacer height={50} />
-                <Button label='Register' action={ () => onRegisterPress() } />                
+                <Button onPress={ () => { firebase.CreateAccountWithEmail(email, password, fName, lName, username, cat, (results) => {
+                    if (results) {
+                        navigation.replace('MissionaryHome', route.params);
+                    }
+                }) } }>Register</Button>               
             </View>
 
             <BlankSpacer height={150} />
         </View>
+        </PaperProvider>
     );
 }
 
