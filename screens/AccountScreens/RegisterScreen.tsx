@@ -19,12 +19,12 @@ const firebase: WaymakerFirebase = WaymakerFirebaseInstance().getInstance();
 
 export default function RegisterScreen({ route, navigation }) {
 
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [fName, setFName] = useState('')
-    const [lName, setLName] = useState('')
+    const [email, setEmail] = useState('person@test.com')
+    const [password, setPassword] = useState('password')
+    const [fName, setFName] = useState('Test')
+    const [lName, setLName] = useState('User')
     const [cat, setCat] = useState('Person')
-    const [username, setUsername] = useState('')
+    const [username, setUsername] = useState('PersonTest')
     const [menuVisible, setMenuVisible] = useState(false);
 
     const openMenu = () => setMenuVisible(true);
@@ -88,9 +88,9 @@ export default function RegisterScreen({ route, navigation }) {
                     <Text style={styles.linkText}>already have an account? login here</Text>
                 </TouchableOpacity>
                 <BlankSpacer height={50} />
-                <Button onPress={ () => { firebase.CreateAccountWithEmail(email, password, fName, lName, username, cat, (results) => {
-                    if (results) {
-                        navigation.replace('MissionaryHome', route.params);
+                <Button onPress={ () => { firebase.CreateAccountWithEmail(email, password, fName, lName, username, cat, (result) => {
+                    if (result.result) {
+                        navigation.replace('Home', route.params);
                     }
                 }) } }>Register</Button>               
             </View>

@@ -14,30 +14,36 @@ const firebase: WaymakerFirebase = WaymakerFirebaseInstance().getInstance();
 var wHeight = Dimensions.get('window').height;
 var wWidth = Dimensions.get('window').width;
 
-export default function AddPostContainer({ }: { }) {
+export default function AddPostContainer({ finishAction }: { finishAction: Function }) {
 
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
 
     return (
-        <View>
+        <View style={styles.container}>
             <TextInput 
-                style={styles.inputStyle}
+                style={[styles.inputStyle, styles.titleInputStyle]}
                 placeholder='Title'
                 onChangeText={(text) => setTitle(text)}
                 value={title}
             /> 
-            <TextInput 
-                style={styles.inputStyle}
+            <TextInput
+                multiline
+                numberOfLines={10}
                 placeholder='Description'
+                style={[styles.inputStyle, styles.descriptionInputStyle]} 
                 onChangeText={(text) => setDescription(text)}
                 value={description}
             /> 
             <Button onPress={ () => { firebase.AddMissionaryPost(title, description, (result) => {
                 if (result) {
                     console.log("Post Sucessfull");
+                    setTitle('');
+                    setDescription('');
                 }
+                finishAction();
             }) }}>Post</Button>
+            <Button onPress={ () => { finishAction(); }}>Cancel</Button>
         </View>
     );
 }
@@ -46,45 +52,30 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-    },
-    linkText: {
-      fontSize: 14,
-      color: '#2e78b7',
-    },
-    loginContainer: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    link: {
-      marginTop: 0,
-      paddingVertical: 15,
-    },
-    title: {
-        fontSize: 40,
-        fontWeight: 'bold'
-    },
-    buttonStyle: {
-        width: 175,
-        height: 65,
-        alignItems: 'center',
-        borderRadius: 10,
-        backgroundColor: '#6495ed',
-        justifyContent: 'center',
-    },
-    buttonTextStyle: {
-        fontSize: 25,
-        fontWeight: 'bold',
-        alignItems: 'center'
+        borderColor: 'slategrey',
+        borderWidth: 1,
+        backgroundColor: '#BFE5D9',
+        borderRadius: 15,
+        maxWidth: wWidth * 0.75,
     },
     inputStyle: {
         borderWidth: 1,
         borderColor: '#808080',
         borderRadius: 10,
         width: wWidth * 0.60,
-        height: wHeight * 0.060,
-        fontSize: 22,
         paddingStart: 10,
-        justifyContent: 'center'
+        marginTop: 25
+    },
+    titleInputStyle: {
+        fontSize: 22,
+        fontWeight: 'bold',
+        height: wHeight * 0.060,
+        justifyContent: 'center',
+    },
+    descriptionInputStyle: {
+        fontSize: 16,
+        fontWeight: 'normal',
+        textAlignVertical: 'top',
+        paddingTop: 10
     }
 });

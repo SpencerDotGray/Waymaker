@@ -1,6 +1,6 @@
 import { StackActions } from '@react-navigation/routers';
 import * as React from 'react';
-import { Alert, StyleSheet, Dimensions, TouchableOpacity, TextInput, BackHandler } from 'react-native';
+import { FlatList, Alert, StyleSheet, Dimensions, TouchableOpacity, TextInput, BackHandler, Modal } from 'react-native';
 import { NavigationContainer, DefaultTheme, DarkTheme, NavigationProp } from '@react-navigation/native';
 // import Button from '../components/Button'
 import { useState } from 'react';
@@ -12,52 +12,24 @@ import { Text, View } from '../../components/Themed';
 import Navigation from '../../navigation';
 import { propTypes } from 'react-spacer';
 import { WaymakerFirebase, WaymakerFirebaseInstance } from "../../firebase/WaymakerFB";
+import AddPostContainer from '../../components/AddPostContainer';
+import PostCard from '../../components/PostCard';
+import BottomTabNavigator from '../../navigation/PersonTabNavigator';
 
 var wHeight = Dimensions.get('window').height;
 var wWidth = Dimensions.get('window').width;
 const firebase: WaymakerFirebase = WaymakerFirebaseInstance().getInstance();
 
-export default function LoginScreen({ route, navigation }) {
-
-    const [email, setEmail] = useState('mission@test.com')
-    const [password, setPassword] = useState('password')
+export default function PersonSettingsScreen({ route, navigation }) {
 
     return (
         <PaperProvider>
         <View style={styles.container}>
-        <BlankSpacer height={85} />
-            <Text style={styles.title}>Log In</Text>
-
-            <BlankSpacer height={50} />
-            <View style={styles.loginContainer}>
-                <TextInput 
-                    style={styles.inputStyle}
-                    placeholder='Email'
-                    onChangeText={(text) => setEmail(text)}
-                    value={email}
-                /> 
-                <BlankSpacer height={25} /> 
-                <TextInput 
-                    style={styles.inputStyle}
-                    placeholder='Password'
-                    onChangeText={(text) => setPassword(text)}
-                    value={password}
-                    secureTextEntry
-                />
-
-                <TouchableOpacity onPress={() => navigation.replace('Register', route.params)} style={styles.link}>
-                    <Text style={styles.linkText}>need an account? register here</Text>
-                </TouchableOpacity>
-                <BlankSpacer height={50} />
-                <Button onPress={ () => { firebase.LoginAccountWithEmail(email, password, (result) => {
-                    console.log(result);
-                    if (result.result) {
-                        navigation.replace('Home', route.params);
-                    }
-                }) } }>Log In</Button>               
-            </View>
-
-            <BlankSpacer height={150} />
+        <Button onPress={ () => { firebase.Logout( (result: boolean) => {
+            if (result) {
+                navigation.replace('Login')
+            }
+        }) } }>Sign Out</Button> 
         </View>
         </PaperProvider>
     );
@@ -107,5 +79,9 @@ const styles = StyleSheet.create({
         fontSize: 22,
         paddingStart: 10,
         justifyContent: 'center'
+    },
+    modal_container: {
+        flex: 1,
+        alignItems: 'center'
     }
 });

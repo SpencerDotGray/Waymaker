@@ -8,61 +8,30 @@ import { Button, Menu, Provider as PaperProvider } from 'react-native-paper';
 
 import BlankSpacer from 'react-native-blank-spacer';
 
-import { Text, View } from '../../components/Themed';
-import Navigation from '../../navigation';
+import { Text, View } from '../components/Themed';
+import Navigation from '../navigation';
 import { propTypes } from 'react-spacer';
-import { WaymakerFirebase, WaymakerFirebaseInstance } from "../../firebase/WaymakerFB";
-import AddPostContainer from '../../components/AddPostContainer';
-import PostCard from '../../components/PostCard';
+import { WaymakerFirebase, WaymakerFirebaseInstance } from "../firebase/WaymakerFB";
+import AddPostContainer from '../components/AddPostContainer';
+import PostCard from '../components/PostCard';
+import PersonTabNavigator from '../navigation/PersonTabNavigator';
+import MissionTabNavigator from '../navigation/MissionTabNavigator';
 
 var wHeight = Dimensions.get('window').height;
 var wWidth = Dimensions.get('window').width;
 const firebase: WaymakerFirebase = WaymakerFirebaseInstance().getInstance();
 
-export default function MissionaryHomeScreen({ route, navigation }) {
+export default function HomeScreen({ route, navigation }) {
 
-    const [modalVisible, setModalVisible] = useState(false);
-    const [posts, setPosts] = useState([]);
-    firebase.GetPostIds( (result) => {
-        setPosts(result);
-    }) // THESE POSTS NEED TO GO INTO A USEEFFECT HOOK ASAPPPPPPPPP
+    let tabNavigator;
+    var cat = firebase.GetUserCategory();
 
-    var deletePost = (postId: string) => {
-
-        firebase.RemovePostById(postId, (result: boolean) => {
-            console.log(result)
-        })
-    }
+    if (cat == 'Missionary') { tabNavigator = <MissionTabNavigator />; }
+    else { tabNavigator = <PersonTabNavigator />; }
 
     return (
         <PaperProvider>
-        <Modal
-            style={styles.modal_container}
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => {
-            Alert.alert("Modal has been closed.");
-            setModalVisible(!modalVisible);
-            }}
-        >
-            <AddPostContainer finishAction={ () => { setModalVisible(false); }}/>
-        </Modal>
-
-        <View style={styles.container}>
-        <BlankSpacer height={85} />
-            <Text style={styles.title}>Missionary Home</Text>
-
-            <BlankSpacer height={50} />
-            
-            
-            <Button onPress={ () => { setModalVisible(true) }}>Add Post</Button>
-            <FlatList
-            data={posts}
-            renderItem={({item}) => <PostCard postId={item} userCategory='Missionary' deletePostFunction={deletePost} />} />
-
-            <BlankSpacer height={150} />
-        </View>
+        {tabNavigator}
         </PaperProvider>
     );
 }

@@ -12,10 +12,12 @@ import NotFoundScreen from '../screens/NotFoundScreen';
 import { RootStackParamList } from '../types';
 
 
-import BottomTabNavigator from './BottomTabNavigator';
+import BottomTabNavigator from './PersonTabNavigator';
 import LoginScreen from '../screens/AccountScreens/LoginScreen'; 
 import RegisterScreen from '../screens/AccountScreens/RegisterScreen';
 import MissionaryHomeScreen from '../screens/MissionaryScreens/MissionaryHomeScreen';
+import PersonHomeScreen from '../screens/PersonScreens/PersonHomeScreen';
+import HomeScreen from '../screens/HomeScreen';
 
 import { LogBox } from 'react-native';
 
@@ -27,6 +29,7 @@ LogBox.ignoreAllLogs();
 
 
 import LinkingConfiguration from './LinkingConfiguration';
+import { Person } from '@material-ui/icons';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -50,6 +53,8 @@ function RootNavigator() {
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Register" component={RegisterScreen} />
       <Stack.Screen name="MissionaryHome" component={MissionaryHomeScreen} />
+      <Stack.Screen name="PersonHome" component={PersonHomeScreen} />
+      <Stack.Screen name="Home" component={HomeScreen} />
     </Stack.Navigator>
   );
 }
