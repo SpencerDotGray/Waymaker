@@ -13,87 +13,32 @@ import useColorScheme from '../hooks/useColorScheme';
 import MissionaryHomeScreen from '../screens/MissionaryScreens/MissionaryHomeScreen';
 import PersonSettingsScreen from '../screens/PersonScreens/PersonSettingsScreen';
 import { BottomTabParamList, TabOneParamList, TabTwoParamList } from '../types';
-
-const BottomTab = createBottomTabNavigator<BottomTabParamList>();
+import { useState } from 'react';
+import { BottomNavigation } from 'react-native-paper';
 
 export default function MissionTabNavigator() {
-  const colorScheme = useColorScheme();
 
-  return (
-    <BottomTab.Navigator
-      initialRouteName="Home"
-      tabBarOptions={{ activeTintColor: Colors[colorScheme].tint }}>
-      <BottomTab.Screen
-        name="Home"
-        component={HomeNavigator}
-        options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="ios-home" color={color} />,
-        }}
-      />
-      <BottomTab.Screen
-        name="Search"
-        component={SearchNavigator}
-        options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="ios-search" color={color} />,
-        }}
-      />
-      <BottomTab.Screen
-        name="Settings"
-        component={SettingsNavigator}
-        options={{
-          tabBarIcon: ({ color }) => <TabBarIcon name="ios-settings" color={color} />,
-        }}
-      />
-    </BottomTab.Navigator>
+  const [index, setIndex] = useState(0);
+  const [routes] = useState([
+    { key: 'home', title: 'Home', icon: 'home', color: '#4682b4'},
+    { key: 'search', title: 'Search', icon: 'magnify', color: '#0000cd' },
+    { key: 'settings', title: 'Settings', icon: 'cog', color: '#003366' }
+  ]);
+
+  const renderScene = BottomNavigation.SceneMap({
+    home: MissionaryHomeScreen,
+    search: MissionaryHomeScreen,
+    settings: PersonSettingsScreen
+  });
+
+  return(
+    <BottomNavigation 
+      navigationState={{ index, routes }}
+      onIndexChange={setIndex}
+      renderScene={renderScene}
+
+      shifting={true}
+    />
   );
 }
 
-// You can explore the built-in icon families and icons on the web at:
-// https://icons.expo.fyi/
-function TabBarIcon(props: { name: React.ComponentProps<typeof Ionicons>['name']; color: string }) {
-  return <Ionicons size={30} style={{ marginBottom: -3 }} {...props} />;
-}
-
-// Each tab has its own navigation stack, you can read more about this pattern here:
-// https://reactnavigation.org/docs/tab-based-navigation#a-stack-navigator-for-each-tab
-const TabOneStack = createStackNavigator<TabOneParamList>();
-
-function HomeNavigator() {
-  return (
-    <TabOneStack.Navigator>
-      <TabOneStack.Screen
-        name="HomeScreen"
-        component={MissionaryHomeScreen}
-        options={{ headerTitle: 'Home' }}
-      />
-    </TabOneStack.Navigator>
-  );
-}
-
-const TabTwoStack = createStackNavigator<TabTwoParamList>();
-
-function SearchNavigator() {
-  return (
-    <TabTwoStack.Navigator>
-      <TabTwoStack.Screen
-        name="SearchScreen"
-        component={MissionaryHomeScreen}
-        options={{ headerTitle: 'Search' }}
-      />
-    </TabTwoStack.Navigator>
-  );
-}
-
-const TabThreeStack = createStackNavigator<TabTwoParamList>();
-
-function SettingsNavigator() {
-  return (
-    <TabThreeStack.Navigator>
-      <TabThreeStack.Screen
-        name="SettingsScreen"
-        component={PersonSettingsScreen}
-        options={{ headerTitle: 'Settings' }}
-      />
-    </TabThreeStack.Navigator>
-  );
-}

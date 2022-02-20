@@ -50,18 +50,20 @@ export default function AddPostContainer({ finishAction }: { finishAction: Funct
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         alignItems: 'center',
         borderColor: 'slategrey',
         borderWidth: 1,
-        backgroundColor: '#BFE5D9',
+        backgroundColor: '#f5f5f5',
         borderRadius: 15,
-        maxWidth: wWidth * 0.75,
+        width: wWidth * 0.75,
+        height: wHeight * 0.55,
+        elevation: 5
     },
     inputStyle: {
         borderWidth: 1,
         borderColor: '#808080',
         borderRadius: 10,
+        backgroundColor: '#fffaf0',
         width: wWidth * 0.60,
         paddingStart: 10,
         marginTop: 25

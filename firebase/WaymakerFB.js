@@ -108,27 +108,21 @@ class WaymakerFirebase {
         })
         .then( (docRef) => {
 
-            try {
-
-                console.log("data: ", userdata);
-                    
-                userdata.Posts.push(docRef.id);
-                firebase.firestore().collection('users').doc(user.uid).update({
-                    Posts: userdata.Posts
-                })
-                .then( (docRef2) => {
-                    console.log("Success post added");
-                    callback(true);
-                })
-                .catch( (error) => {
-                    console.error(error);
-                    callback(false);
-                });
-            } catch (error) { console.error(error); }
+            firebase.firestore().collection('users').doc(user.uid).update({
+                Posts: firebase.firestore.FieldValue.arrayUnion(docRef.id)
+            })
+            .then( (docRef2) => {
+                console.log("Success post added");
+                callback(true);
+            })
+            .catch( (error) => {
+                console.error(error);
+                callback(false);
+            });
         })
         .catch( (error) => {
             callback(false);
-        });
+        }); // ERROR WHEN DELETING AND THEN MAKING ANOTHER ADDS THE OLD DELETED ONE BACK INTO THE MIX
     }
 
     GetPostById = (id, callback) => {

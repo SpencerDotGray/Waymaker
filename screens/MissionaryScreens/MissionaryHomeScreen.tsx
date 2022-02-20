@@ -1,10 +1,10 @@
 import { StackActions } from '@react-navigation/routers';
 import * as React from 'react';
-import { FlatList, Alert, StyleSheet, Dimensions, TouchableOpacity, TextInput, BackHandler, Modal } from 'react-native';
+import { FlatList, Alert, StyleSheet, Dimensions, TouchableOpacity, TextInput, BackHandler } from 'react-native';
 import { NavigationContainer, DefaultTheme, DarkTheme, NavigationProp } from '@react-navigation/native';
 // import Button from '../components/Button'
-import { useState } from 'react';
-import { Button, Menu, Provider as PaperProvider } from 'react-native-paper';
+import { useState, useEffect } from 'react';
+import { Button, Menu, Provider as PaperProvider, Modal as PaperModal } from 'react-native-paper';
 
 import BlankSpacer from 'react-native-blank-spacer';
 
@@ -23,10 +23,7 @@ export default function MissionaryHomeScreen({ route, navigation }) {
 
     const [modalVisible, setModalVisible] = useState(false);
     const [posts, setPosts] = useState([]);
-    firebase.GetPostIds( (result) => {
-        setPosts(result);
-    }) // THESE POSTS NEED TO GO INTO A USEEFFECT HOOK ASAPPPPPPPPP
-
+    
     var deletePost = (postId: string) => {
 
         firebase.RemovePostById(postId, (result: boolean) => {
@@ -34,43 +31,48 @@ export default function MissionaryHomeScreen({ route, navigation }) {
         })
     }
 
+    useEffect( () => {
+        firebase.GetPostIds( (result) => {
+            setPosts(result);
+        }) // THESE POSTS NEED TO GO INTO A USEEFFECT HOOK ASAPPPPPPPPP
+    });
+
     return (
-        <PaperProvider>
-        <Modal
-            style={styles.modal_container}
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => {
-            Alert.alert("Modal has been closed.");
-            setModalVisible(!modalVisible);
-            }}
-        >
-            <AddPostContainer finishAction={ () => { setModalVisible(false); }}/>
-        </Modal>
-
         <View style={styles.container}>
-        <BlankSpacer height={85} />
-            <Text style={styles.title}>Missionary Home</Text>
+            <BlankSpacer height={85} />
+                <Text style={styles.title}>Missionary Home</Text>
 
-            <BlankSpacer height={50} />
-            
-            
-            <Button onPress={ () => { setModalVisible(true) }}>Add Post</Button>
-            <FlatList
-            data={posts}
-            renderItem={({item}) => <PostCard postId={item} userCategory='Missionary' deletePostFunction={deletePost} />} />
+                <BlankSpacer height={50} />
+                
+                
+                <Button onPress={ () => { setModalVisible(true) }}>Add Post</Button>
+                <FlatList
+                data={posts}
+                renderItem={({item}) => <PostCard postId={item} userCategory='Missionary' deletePostFunction={deletePost} />} />
 
-            <BlankSpacer height={150} />
+                <BlankSpacer height={150} />
+
+
+                <PaperModal 
+                    visible={modalVisible}
+                    onDismiss={ () => { setModalVisible(false); }}
+                    style={styles.modal_container}
+                >
+                    <AddPostContainer finishAction={ () => { setModalVisible(false); }} />
+                </PaperModal>
         </View>
-        </PaperProvider>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        justifyContent: 'center',
         alignItems: 'center',
+    },
+    inner_container: {
+        flex: 1,
+        alignItems: 'center'
     },
     linkText: {
       fontSize: 14,
@@ -95,7 +97,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 10,
         backgroundColor: '#6495ed',
-        justifyContent: 'center',
+        justifyContent: 'center'
     },
     buttonTextStyle: {
         fontSize: 25,
@@ -114,6 +116,7 @@ const styles = StyleSheet.create({
     },
     modal_container: {
         flex: 1,
+        justifyContent: 'center',
         alignItems: 'center'
     }
 });

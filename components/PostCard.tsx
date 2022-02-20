@@ -2,7 +2,7 @@ import * as WebBrowser from 'expo-web-browser';
 import React from 'react';
 import { useState } from 'react';
 import { Alert, StyleSheet, Dimensions, TouchableOpacity, TextInput, BackHandler } from 'react-native';
-import { Button, Menu, Provider as PaperProvider } from 'react-native-paper';
+import { Button, Menu, Provider as PaperProvider, Dialog } from 'react-native-paper';
 
 import Colors from '../constants/Colors';
 import { MonoText } from './StyledText';
@@ -21,11 +21,12 @@ export default function PostCard({ postId, userCategory, deletePostFunction }: {
     const [description, setDescription] = useState('');
     const [user, setUser] = useState('');
     const [postDate, setPostDate] = useState('');
+    const [dialogVisible, setDialogVisible] = useState(false);
 
     let deleteComponent;
 
     if (userCategory == 'Missionary') { 
-        deleteComponent = <Button labelStyle={styles.delete_button} onPress={ () => { deletePostFunction(postId) } }>DELETE POST</Button>
+        deleteComponent = <Button labelStyle={styles.delete_button} onPress={ () => { setDialogVisible(true) } }>DELETE POST</Button>
     } else {
         deleteComponent = null;
     }
@@ -43,6 +44,12 @@ export default function PostCard({ postId, userCategory, deletePostFunction }: {
             <Text style={styles.card_user}>{user} - {postDate}</Text>
             <Text style={styles.card_description}>{description}</Text>
             {deleteComponent}
+            <Dialog visible={dialogVisible} onDismiss={ () => {setDialogVisible(false); }}>
+                <Dialog.Actions>
+                    <Button onPress={ () => { setDialogVisible(false); } }>Cancel</Button>
+                    <Button onPress={ () => { setDialogVisible(false); deletePostFunction(postId); } }>Confirm</Button>
+                </Dialog.Actions>
+            </Dialog>
         </View>
     );
 }

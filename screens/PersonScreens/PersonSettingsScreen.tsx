@@ -23,7 +23,6 @@ const firebase: WaymakerFirebase = WaymakerFirebaseInstance().getInstance();
 export default function PersonSettingsScreen({ route, navigation }) {
 
     return (
-        <PaperProvider>
         <View style={styles.container}>
         <Button onPress={ () => { firebase.Logout( (result: boolean) => {
             if (result) {
@@ -31,7 +30,6 @@ export default function PersonSettingsScreen({ route, navigation }) {
             }
         }) } }>Sign Out</Button> 
         </View>
-        </PaperProvider>
     );
 }
 

@@ -8,6 +8,7 @@ import useColorScheme from './hooks/useColorScheme';
 import Navigation from './navigation';
 import { firebase } from './firebase/config';
 import { Alert, Text } from 'react-native';
+import { Provider as PaperProvider } from 'react-native-paper'
 
 
 export default function App() {
@@ -19,9 +20,9 @@ export default function App() {
   const colorScheme = useColorScheme();
 
   return (
-    <SafeAreaProvider>
+    <PaperProvider>
       <Navigation colorScheme={colorScheme} />
       <StatusBar />
-    </SafeAreaProvider>
+    </PaperProvider>
   );
 }
