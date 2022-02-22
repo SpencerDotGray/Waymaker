@@ -16,7 +16,7 @@ import { BottomTabParamList, TabOneParamList, TabTwoParamList } from '../types';
 import { useState } from 'react';
 import { BottomNavigation } from 'react-native-paper';
 
-export default function MissionTabNavigator() {
+export default function MissionTabNavigator({ navigation }) {
 
   const [index, setIndex] = useState(0);
   const [routes] = useState([
@@ -25,11 +25,16 @@ export default function MissionTabNavigator() {
     { key: 'settings', title: 'Settings', icon: 'cog', color: '#003366' }
   ]);
 
-  const renderScene = BottomNavigation.SceneMap({
-    home: MissionaryHomeScreen,
-    search: MissionaryHomeScreen,
-    settings: PersonSettingsScreen
-  });
+  const renderScene = ({ route }) => {
+    switch(route.key) {
+      case 'home':
+        return <MissionaryHomeScreen navigation={navigation}/>;
+      case 'search':
+        return <MissionaryHomeScreen navigation={navigation}/>;
+      case 'settings':
+        return <PersonSettingsScreen navigation={navigation} />;
+    }
+  };
 
   return(
     <BottomNavigation 

@@ -12,88 +12,38 @@
  import useColorScheme from '../hooks/useColorScheme';
  import PersonHomeScreen from '../screens/PersonScreens/PersonHomeScreen';
  import PersonSettingsScreen from '../screens/PersonScreens/PersonSettingsScreen';
+ import PersonSearchScreen from '../screens/PersonScreens/PersonSearchScreen';
  import { BottomTabParamList, TabOneParamList, TabTwoParamList } from '../types';
- 
- const BottomTab = createBottomTabNavigator<BottomTabParamList>();
- 
- export default function PersonTabNavigator() {
-   const colorScheme = useColorScheme();
- 
-   return (
-     <BottomTab.Navigator
-       initialRouteName="Home"
-       tabBarOptions={{ activeTintColor: Colors[colorScheme].tint }}>
-       <BottomTab.Screen
-         name="Home"
-         component={HomeNavigator}
-         options={{
-           tabBarIcon: ({ color }) => <TabBarIcon name="ios-home" color={color} />,
-         }}
-       />
-       <BottomTab.Screen
-         name="Search"
-         component={SearchNavigator}
-         options={{
-           tabBarIcon: ({ color }) => <TabBarIcon name="ios-search" color={color} />,
-         }}
-       />
-       <BottomTab.Screen
-         name="Settings"
-         component={SettingsNavigator}
-         options={{
-           tabBarIcon: ({ color }) => <TabBarIcon name="ios-settings" color={color} />,
-         }}
-       />
-     </BottomTab.Navigator>
-   );
- }
- 
- // You can explore the built-in icon families and icons on the web at:
- // https://icons.expo.fyi/
- function TabBarIcon(props: { name: React.ComponentProps<typeof Ionicons>['name']; color: string }) {
-   return <Ionicons size={30} style={{ marginBottom: -3 }} {...props} />;
- }
- 
- // Each tab has its own navigation stack, you can read more about this pattern here:
- // https://reactnavigation.org/docs/tab-based-navigation#a-stack-navigator-for-each-tab
- const TabOneStack = createStackNavigator<TabOneParamList>();
- 
- function HomeNavigator() {
-   return (
-     <TabOneStack.Navigator>
-       <TabOneStack.Screen
-         name="HomeScreen"
-         component={PersonHomeScreen}
-         options={{ headerTitle: 'Home' }}
-       />
-     </TabOneStack.Navigator>
-   );
- }
- 
- const TabTwoStack = createStackNavigator<TabTwoParamList>();
- 
- function SearchNavigator() {
-   return (
-     <TabTwoStack.Navigator>
-       <TabTwoStack.Screen
-         name="SearchScreen"
-         component={PersonHomeScreen}
-         options={{ headerTitle: 'Search' }}
-       />
-     </TabTwoStack.Navigator>
-   );
- }
- const TabThreeStack = createStackNavigator<TabTwoParamList>();
- 
- function SettingsNavigator() {
-   return (
-     <TabThreeStack.Navigator>
-       <TabThreeStack.Screen
-         name="SearchScreen"
-         component={PersonSettingsScreen}
-         options={{ headerTitle: 'Settings' }}
-       />
-     </TabThreeStack.Navigator>
-   );
- }
- 
+ import { BottomNavigation } from 'react-native-paper';
+ import { useState } from 'react';
+
+ export default function PersonTabNavigator({ navigation }) {
+
+  const [index, setIndex] = useState(0);
+  const [routes] = useState([
+    { key: 'home', title: 'Home', icon: 'home', color: '#4682b4'},
+    { key: 'search', title: 'Search', icon: 'magnify', color: '#0000cd' },
+    { key: 'settings', title: 'Settings', icon: 'cog', color: '#003366' }
+  ]);
+
+  const renderScene = ({ route }) => {
+    switch(route.key) {
+      case 'home':
+        return <PersonHomeScreen navigation={navigation}/>;
+      case 'search':
+        return <PersonSearchScreen navigation={navigation}/>;
+      case 'settings':
+        return <PersonSettingsScreen navigation={navigation} />;
+    }
+  };
+
+  return(
+    <BottomNavigation 
+      navigationState={{ index, routes }}
+      onIndexChange={setIndex}
+      renderScene={renderScene}
+
+      shifting={true}
+    />
+  );
+}

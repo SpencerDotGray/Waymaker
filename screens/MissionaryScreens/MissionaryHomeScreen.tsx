@@ -19,7 +19,7 @@ var wHeight = Dimensions.get('window').height;
 var wWidth = Dimensions.get('window').width;
 const firebase: WaymakerFirebase = WaymakerFirebaseInstance().getInstance();
 
-export default function MissionaryHomeScreen({ route, navigation }) {
+export default function MissionaryHomeScreen({ navigation }) {
 
     const [modalVisible, setModalVisible] = useState(false);
     const [posts, setPosts] = useState([]);
@@ -34,7 +34,7 @@ export default function MissionaryHomeScreen({ route, navigation }) {
     useEffect( () => {
         firebase.GetPostIds( (result) => {
             setPosts(result);
-        }) // THESE POSTS NEED TO GO INTO A USEEFFECT HOOK ASAPPPPPPPPP
+        })
     });
 
     return (

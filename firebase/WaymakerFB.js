@@ -44,7 +44,6 @@ class WaymakerFirebase {
                 Followers: []
             })
             .then( (docRef) => {
-                console.log("User Successfully added: " + email + " " + username);
                 userdata = docRef.data();
 
                 var cat = 'MissionaryHome';
@@ -187,6 +186,59 @@ class WaymakerFirebase {
         }).catch( (error) => {
             callback(false);
         })
+    }
+
+    GetMissionUsers = (nameCriteria, callback) => {
+
+        firebase.firestore().collection('users')
+            .where('Category', '==', 'Missionary')
+            .get()
+            .then( (querySnapshot) => {
+
+                console.log('Success Search')
+                var missionUsers = []
+                querySnapshot.forEach( (doc) => {
+
+                    const un = doc.data().Username
+
+                    if (un.includes(nameCriteria)) {
+                        missionUsers.push(doc.data().Username)
+                    }
+                })
+
+                callback(missionUsers)
+            })
+            .catch( (error) => {
+                console.log('Unsuccessful search')
+                callback([])
+            })
+    }
+
+    FollowUser(followee) {
+
+        firebase.firestore().collection('users')
+            .where('Username', '==', followee)
+            .get()
+            .then( (querySnapshot) => {
+
+                querySnapshot.forEach( (doc) => {
+
+                    var uid = doc.id;
+
+                    firebase.firestore().collection('users').doc(user.uid).update( {
+                        Followers: firebase.firestore.FieldValue.arrayUnion(uid)
+                    })
+                    .then( () => {
+                        console.log('Follow Successful')
+                    })
+                    .catch ( (error) => {
+                        console.log('Follow Unsuccessful 2')
+                    })
+                })
+            })
+            .catch ( (error) => {
+                console.log('Follow Unsuccessful 1: ' + error)
+            });
     }
 }
 

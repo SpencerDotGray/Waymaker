@@ -20,15 +20,13 @@ var wHeight = Dimensions.get('window').height;
 var wWidth = Dimensions.get('window').width;
 const firebase: WaymakerFirebase = WaymakerFirebaseInstance().getInstance();
 
-export default function PersonSettingsScreen({ route, navigation }) {
+export default function PersonSettingsScreen({ navigation }) {
 
     return (
         <View style={styles.container}>
-        <Button onPress={ () => { firebase.Logout( (result: boolean) => {
-            if (result) {
-                navigation.replace('Login')
-            }
-        }) } }>Sign Out</Button> 
+        <Button onPress={ () => {
+            navigation.replace('Login')
+        } }>Sign Out</Button> 
         </View>
     );
 }
@@ -36,6 +34,7 @@ export default function PersonSettingsScreen({ route, navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        justifyContent: 'center',
         alignItems: 'center',
     },
     linkText: {

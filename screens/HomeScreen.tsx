@@ -26,12 +26,20 @@ export default function HomeScreen({ route, navigation }) {
     let tabNavigator;
     var cat = firebase.GetUserCategory();
 
-    if (cat == 'Missionary') { tabNavigator = <MissionTabNavigator />; }
-    else { tabNavigator = <PersonTabNavigator />; }
+    var logout = () => {
+        navigation.replace('Login')
+    }
+
+    if (cat == 'Missionary') { 
+        tabNavigator = <MissionTabNavigator navigation={navigation}/>; 
+    }
+    else { 
+        tabNavigator = <PersonTabNavigator navigation={navigation}/>; 
+    }
 
     return (
         <PaperProvider>
-        {tabNavigator}
+            {tabNavigator}
         </PaperProvider>
     );
 }

@@ -19,7 +19,7 @@ const firebase: WaymakerFirebase = WaymakerFirebaseInstance().getInstance();
 
 export default function LoginScreen({ route, navigation }) {
 
-    const [email, setEmail] = useState('mission@test.com')
+    const [email, setEmail] = useState('person@test.com')
     const [password, setPassword] = useState('password')
 
     return (

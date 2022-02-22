@@ -1,40 +1,50 @@
-import { StackActions } from '@react-navigation/routers';
+
 import * as React from 'react';
 import { FlatList, Alert, StyleSheet, Dimensions, TouchableOpacity, TextInput, BackHandler, Modal } from 'react-native';
-import { NavigationContainer, DefaultTheme, DarkTheme, NavigationProp } from '@react-navigation/native';
-// import Button from '../components/Button'
 import { useState } from 'react';
-import { Button, Menu, Provider as PaperProvider } from 'react-native-paper';
+import { Button, Menu, Provider as PaperProvider, Searchbar } from 'react-native-paper';
 
 import BlankSpacer from 'react-native-blank-spacer';
 
 import { Text, View } from '../../components/Themed';
-import Navigation from '../../navigation';
-import { propTypes } from 'react-spacer';
 import { WaymakerFirebase, WaymakerFirebaseInstance } from "../../firebase/WaymakerFB";
-import AddPostContainer from '../../components/AddPostContainer';
-import PostCard from '../../components/PostCard';
-import BottomTabNavigator from '../../navigation/PersonTabNavigator';
+import UserCard from '../../components/UserCard';
 
 var wHeight = Dimensions.get('window').height;
 var wWidth = Dimensions.get('window').width;
 const firebase: WaymakerFirebase = WaymakerFirebaseInstance().getInstance();
 
-export default function PersonHomeScreen({ navigation }) {
+export default function PersonSearchScreen({ navigation }) {
 
-    const [posts, setPosts] = useState([]);
-    firebase.GetPostsOfFollowers( (result: Array<never>) => {
-        setPosts(result);
-    })
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
+
+    const onChangeSearch = (query: string) => {
+
+        setSearchQuery(query);
+        if (query === '') {
+            setSearchResults([])
+        } else {
+            firebase.GetMissionUsers(searchQuery, (results: Array<never>) => {
+                setSearchResults(results);
+            })
+        }
+    }
 
     return (
         <PaperProvider>
         <View style={styles.container}>
             <BlankSpacer height={85} />
-            <Text style={styles.title}>Person Home</Text>
+            <Text style={styles.title}>Person Search</Text>
+            <Searchbar 
+                placeholder='Search'
+                onChangeText={onChangeSearch}
+                value={searchQuery}
+            />
             <FlatList
-            data={posts}
-            renderItem={({item}) => <PostCard postId={item} userCategory='Person' deletePostFunction={() => {}} />} />
+                data={searchResults}
+                renderItem={({item}) => <UserCard username={item} /> } 
+            />
         </View>
         </PaperProvider>
     );
@@ -44,7 +54,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        backgroundColor: '#f5f5f5'
     },
     linkText: {
       fontSize: 14,
